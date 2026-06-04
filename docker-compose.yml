@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://backend:5000
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - DATABASE_URL=sqlite:///./forex_scanner.db
+      - CORS_ORIGINS=http://localhost:3000,http://frontend
+    volumes:
+      - ./backend/forex_scanner.db:/app/forex_scanner.db
+
+networks:
+  default:
+    name: forex-scanner-network
